@@ -1,45 +1,80 @@
-# Tic-Tac-Toe MERN Stack Game
+# 🎮 Enhanced Tic-Tac-Toe Game
 
-A full-stack Tic-Tac-Toe game built with the MERN stack (MongoDB, Express.js, React.js, Node.js) featuring user authentication, multiplayer support, and game statistics.
+A feature-rich Tic-Tac-Toe game built with React, Material-UI, and Node.js. Play against AI or another player with multiple board sizes, scoring, and advanced features.
 
-## 🎮 Features
+## ✨ Features
 
-### Core Game Features
-- **Classic Tic-Tac-Toe gameplay** with a 3x3 grid
-- **Single Player Mode** - Play against yourself
-- **Multiplayer Mode** - Play with friends
-- **Real-time game state** with automatic turn switching
-- **Win detection** for rows, columns, and diagonals
-- **Draw detection** when the board is full
+### 🎯 Game Modes
+- **Player vs Player (PvP)**: Classic two-player mode
+- **Player vs AI**: Challenge intelligent computer opponents
 
-### User Features
-- **User Registration & Authentication** with JWT tokens
-- **User Profiles** with editable information
-- **Game Statistics** tracking wins, losses, draws, and win rate
-- **Game History** showing all past games
-- **Responsive Design** works on desktop and mobile
+### 🤖 AI Difficulty Levels
+- **Easy**: Random moves for beginners
+- **Medium**: 50% smart moves, 50% random
+- **Hard**: Intelligent AI that tries to win and block your moves
 
-### Technical Features
-- **RESTful API** with Express.js backend
-- **MongoDB Database** for persistent data storage
-- **JWT Authentication** for secure user sessions
-- **Material-UI** for modern, responsive design
-- **Context API** for state management
-- **Protected Routes** for authenticated users
+### 📏 Multiple Board Sizes
+- **3x3**: Classic Tic-Tac-Toe
+- **4x4**: Larger board for more complex gameplay
+- **5x5**: Advanced board for experienced players
 
-## 🚀 Quick Start
+### 📊 Statistics & Tracking
+- Real-time score tracking for X, O, and draws
+- Game timer showing current game duration
+- Persistent score history across games
+- Game history with detailed information
+
+### 🎨 Visual Enhancements
+- **Dark/Light Mode**: Toggle between themes
+- **Winning Line Highlight**: Green highlight for winning combination
+- **Last Move Indicator**: Yellow highlight for the most recent move
+- **Smooth Animations**: Hover effects and move animations
+- **Responsive Design**: Works on all screen sizes
+
+### 🔊 Sound Effects
+- Move sounds when placing pieces
+- Victory sounds when winning
+- Draw sounds for tied games
+- Toggle sound on/off
+
+### ⚙️ Settings Panel
+- Game mode selection
+- AI difficulty adjustment
+- Board size selection
+- Animation toggle
+- Sound toggle
+
+## 🚀 Live Demo
+
+Play the game online: [Tic-Tac-Toe Game](https://your-vercel-deployment-url.com)
+
+## 🛠️ Technology Stack
+
+### Frontend
+- **React 18**: Modern React with hooks
+- **Material-UI**: Beautiful UI components
+- **React Router**: Navigation and routing
+- **Axios**: HTTP client for API calls
+
+### Backend
+- **Node.js**: Server runtime
+- **Express.js**: Web framework
+- **MongoDB**: Database (with in-memory fallback)
+- **JWT**: Authentication
+- **Mongoose**: MongoDB ODM
+
+## 📦 Installation
 
 ### Prerequisites
 - Node.js (v14 or higher)
-- MongoDB (local installation or MongoDB Atlas)
 - npm or yarn
 
-### Installation
+### Setup Instructions
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd tictactoe-mern
+   git clone https://github.com/RanbirProjects/tictockgame.git
+   cd tictockgame
    ```
 
 2. **Install dependencies**
@@ -47,188 +82,120 @@ A full-stack Tic-Tac-Toe game built with the MERN stack (MongoDB, Express.js, Re
    # Install root dependencies
    npm install
    
-   # Install server dependencies
-   cd server
-   npm install
-   
    # Install client dependencies
-   cd ../client
+   cd client
+   npm install
+   
+   # Install server dependencies
+   cd ../server
    npm install
    ```
 
-3. **Set up environment variables**
-   
-   Create a `.env` file in the `server` directory:
-   ```env
-   MONGODB_URI=mongodb://localhost:27017/tictactoe
-   JWT_SECRET=your_jwt_secret_key_here_change_in_production
-   PORT=5000
-   NODE_ENV=development
-   ```
-
-4. **Start MongoDB**
-   
-   Make sure MongoDB is running on your system, or use MongoDB Atlas.
-
-5. **Run the application**
-   
-   From the root directory:
+3. **Environment Setup**
    ```bash
-   # Start both frontend and backend
-   npm start
+   # Create environment file for server
+   cd server
+   cp config.env.example config.env
+   ```
    
-   # Or start them separately:
-   npm run server  # Backend only
-   npm run client  # Frontend only
+   Edit `server/config.env`:
+   ```env
+   PORT=5001
+   MONGODB_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret
    ```
 
-6. **Access the application**
+4. **Run the application**
+   ```bash
+   # From root directory
+   npm start
+   ```
    
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:5000
+   This will start both the backend server (port 5001) and frontend (port 3000).
 
-## 📁 Project Structure
+## 🎮 How to Play
 
+1. **Choose Game Mode**: Select between PvP or AI mode in settings
+2. **Select Board Size**: Choose 3x3, 4x4, or 5x5 board
+3. **Adjust AI Difficulty**: If playing against AI, choose easy, medium, or hard
+4. **Make Moves**: Click on empty cells to place your X or O
+5. **Win**: Get 3, 4, or 5 in a row (depending on board size) to win
+6. **Track Progress**: View your scores and game history
+
+## 🔧 Development
+
+### Project Structure
 ```
-tictactoe-mern/
+tictockgame/
 ├── client/                 # React frontend
-│   ├── public/
-│   │   ├── components/     # React components
-│   │   │   ├── auth/       # Authentication components
-│   │   │   └── ...
-│   │   ├── contexts/       # React contexts
-│   │   └── ...
+│   ├── public/            # Static files
+│   ├── src/               # Source code
+│   │   ├── components/    # React components
+│   │   ├── contexts/      # React contexts
+│   │   └── App.js         # Main app component
 │   └── package.json
-├── server/                 # Node.js backend
-│   ├── models/             # MongoDB models
-│   ├── routes/             # API routes
-│   ├── middleware/         # Custom middleware
-│   ├── config.env          # Environment variables
-│   ├── server.js           # Main server file
-│   └── package.json
-├── package.json            # Root package.json
+├── server/                # Node.js backend
+│   ├── models/           # Database models
+│   ├── routes/           # API routes
+│   ├── middleware/       # Custom middleware
+│   └── server.js         # Server entry point
+├── package.json          # Root package.json
 └── README.md
 ```
 
-## 🎯 How to Play
+### Available Scripts
 
-### Single Player Mode
-1. Register or login to your account
-2. Click "New Game" on the dashboard
-3. Select "Single Player"
-4. Play against yourself by clicking on empty cells
-5. Try to get three in a row to win!
+```bash
+# Root directory
+npm start          # Start both client and server
+npm run client     # Start only frontend
+npm run server     # Start only backend
 
-### Multiplayer Mode
-1. Create a new multiplayer game
-2. Share the game URL with a friend
-3. Your friend can join the game
-4. Take turns making moves
-5. First to get three in a row wins!
+# Client directory
+npm start          # Start React development server
+npm build          # Build for production
+npm test           # Run tests
 
-## 🔧 API Endpoints
-
-### Authentication
-- `POST /api/auth/register` - Register a new user
-- `POST /api/auth/login` - Login user
-- `GET /api/auth/profile` - Get user profile
-- `PUT /api/auth/profile` - Update user profile
-
-### Games
-- `POST /api/games` - Create a new game
-- `GET /api/games` - Get user's games
-- `GET /api/games/:id` - Get specific game
-- `PUT /api/games/:id/move` - Make a move
-- `PUT /api/games/:id/join` - Join multiplayer game
-- `DELETE /api/games/:id` - Delete game
-
-## 🛠️ Technologies Used
-
-### Frontend
-- **React.js** - UI library
-- **Material-UI** - Component library
-- **React Router** - Client-side routing
-- **Axios** - HTTP client
-- **Context API** - State management
-
-### Backend
-- **Node.js** - Runtime environment
-- **Express.js** - Web framework
-- **MongoDB** - Database
-- **Mongoose** - ODM for MongoDB
-- **JWT** - Authentication
-- **bcryptjs** - Password hashing
-- **express-validator** - Input validation
-
-## 🎨 Customization
-
-### Styling
-The app uses Material-UI theming. You can customize the theme in `client/src/App.js`:
-
-```javascript
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#1976d2', // Change primary color
-    },
-    secondary: {
-      main: '#dc004e', // Change secondary color
-    },
-  },
-});
+# Server directory
+npm start          # Start Express server
+npm run dev        # Start with nodemon
 ```
 
-### Game Rules
-Modify the game logic in `server/models/Game.js` to change win conditions or board size.
+## 🌐 Deployment
 
-## 🚀 Deployment
+### Vercel Deployment
+1. Connect your GitHub repository to Vercel
+2. Set build command: `cd client && npm install && npm run build`
+3. Set output directory: `client/build`
+4. Deploy!
 
-### Backend Deployment (Heroku)
-1. Create a Heroku app
-2. Set environment variables in Heroku dashboard
-3. Connect to MongoDB Atlas
-4. Deploy using Git
-
-### Frontend Deployment (Netlify/Vercel)
-1. Build the React app: `npm run build`
-2. Deploy the `build` folder to your hosting service
+### Environment Variables for Production
+- `REACT_APP_API_URL`: Your backend API URL
+- `MONGODB_URI`: MongoDB connection string
+- `JWT_SECRET`: JWT secret key
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## 📝 License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🐛 Troubleshooting
+## 🙏 Acknowledgments
 
-### Common Issues
-
-1. **MongoDB Connection Error**
-   - Ensure MongoDB is running
-   - Check your connection string in `config.env`
-
-2. **Port Already in Use**
-   - Change the port in `config.env`
-   - Kill processes using the port
-
-3. **JWT Token Issues**
-   - Clear browser localStorage
-   - Check JWT_SECRET in environment variables
-
-4. **CORS Errors**
-   - Ensure the backend is running on the correct port
-   - Check CORS configuration in `server.js`
+- Material-UI for the beautiful components
+- React team for the amazing framework
+- The Tic-Tac-Toe community for inspiration
 
 ## 📞 Support
 
-If you encounter any issues or have questions, please open an issue on GitHub.
+If you have any questions or need help, please open an issue on GitHub or contact the maintainer.
 
 ---
 
-**Happy Gaming! 🎮** # tictockgame
+**Enjoy playing! 🎉**

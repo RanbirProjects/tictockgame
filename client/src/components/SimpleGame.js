@@ -23,10 +23,7 @@ import {
   ListItemText,
   Divider,
   IconButton,
-  Tooltip,
-  Slider,
-  Card,
-  CardContent
+  Tooltip
 } from '@mui/material';
 import {
   Close as CloseIcon,
@@ -41,7 +38,6 @@ import {
   LightMode as LightIcon,
   SmartToy as RobotIcon,
   Person as PersonIcon,
-  Speed as SpeedIcon,
   Psychology as BrainIcon
 } from '@mui/icons-material';
 
@@ -75,73 +71,6 @@ const SimpleGame = () => {
   const [gameStartTime, setGameStartTime] = useState(null);
   const [gameDuration, setGameDuration] = useState(0);
 
-  // Initialize board based on size
-  useEffect(() => {
-    const newBoard = Array(boardSize).fill().map(() => Array(boardSize).fill(''));
-    setBoard(newBoard);
-    setCurrentPlayer('X');
-    setWinner(null);
-    setGameOver(false);
-    setHighlightWinningLine([]);
-    setLastMove(null);
-    setGameStartTime(Date.now());
-  }, [boardSize]);
-
-  // Timer effect
-  useEffect(() => {
-    let interval;
-    if (gameStartTime && !gameOver) {
-      interval = setInterval(() => {
-        setGameDuration(Math.floor((Date.now() - gameStartTime) / 1000));
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [gameStartTime, gameOver]);
-
-  // AI move effect
-  useEffect(() => {
-    if (gameMode === 'ai' && currentPlayer === 'O' && !gameOver && !aiThinking) {
-      const timer = setTimeout(() => {
-        makeAiMove();
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [currentPlayer, gameOver, aiThinking, gameMode]);
-
-  const playSound = (type) => {
-    if (!soundEnabled) return;
-    
-    // Create audio context for sound effects
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    switch (type) {
-      case 'move':
-        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-        oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
-        break;
-      case 'win':
-        oscillator.frequency.setValueAtTime(523, audioContext.currentTime);
-        oscillator.frequency.setValueAtTime(659, audioContext.currentTime + 0.1);
-        oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.2);
-        break;
-      case 'draw':
-        oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
-        oscillator.frequency.setValueAtTime(300, audioContext.currentTime + 0.1);
-        break;
-    }
-    
-    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-    
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.3);
-  };
-
   const checkWinner = useCallback((board) => {
     const size = board.length;
     
@@ -173,46 +102,7 @@ const SimpleGame = () => {
     return isDraw ? { winner: 'draw', line: [] } : null;
   }, []);
 
-  const makeAiMove = () => {
-    if (gameOver) return;
-    
-    setAiThinking(true);
-    
-    setTimeout(() => {
-      const move = getAiMove();
-      if (move) {
-        handleCellClick(move.row, move.col);
-      }
-      setAiThinking(false);
-    }, 300);
-  };
-
-  const getAiMove = () => {
-    const emptyCells = [];
-    for (let i = 0; i < boardSize; i++) {
-      for (let j = 0; j < boardSize; j++) {
-        if (board[i][j] === '') {
-          emptyCells.push({ row: i, col: j });
-        }
-      }
-    }
-    
-    if (emptyCells.length === 0) return null;
-    
-    switch (aiDifficulty) {
-      case 'easy':
-        return emptyCells[Math.floor(Math.random() * emptyCells.length)];
-      case 'medium':
-        // 50% chance of smart move, 50% random
-        return Math.random() < 0.5 ? getSmartMove() : emptyCells[Math.floor(Math.random() * emptyCells.length)];
-      case 'hard':
-        return getSmartMove();
-      default:
-        return emptyCells[Math.floor(Math.random() * emptyCells.length)];
-    }
-  };
-
-  const getSmartMove = () => {
+  const getSmartMove = useCallback(() => {
     // Try to win
     for (let i = 0; i < boardSize; i++) {
       for (let j = 0; j < boardSize; j++) {
@@ -266,6 +156,114 @@ const SimpleGame = () => {
       }
     }
     return emptyCells[Math.floor(Math.random() * emptyCells.length)];
+  }, [board, boardSize, checkWinner]);
+
+  const getAiMove = useCallback(() => {
+    const emptyCells = [];
+    for (let i = 0; i < boardSize; i++) {
+      for (let j = 0; j < boardSize; j++) {
+        if (board[i][j] === '') {
+          emptyCells.push({ row: i, col: j });
+        }
+      }
+    }
+    
+    if (emptyCells.length === 0) return null;
+    
+    switch (aiDifficulty) {
+      case 'easy':
+        return emptyCells[Math.floor(Math.random() * emptyCells.length)];
+      case 'medium':
+        // 50% chance of smart move, 50% random
+        return Math.random() < 0.5 ? getSmartMove() : emptyCells[Math.floor(Math.random() * emptyCells.length)];
+      case 'hard':
+        return getSmartMove();
+      default:
+        return emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    }
+  }, [board, boardSize, aiDifficulty, getSmartMove]);
+
+  const makeAiMove = useCallback(() => {
+    if (gameOver) return;
+    
+    setAiThinking(true);
+    
+    setTimeout(() => {
+      const move = getAiMove();
+      if (move) {
+        handleCellClick(move.row, move.col);
+      }
+      setAiThinking(false);
+    }, 300);
+  }, [gameOver, getAiMove]);
+
+  // Initialize board based on size
+  useEffect(() => {
+    const newBoard = Array(boardSize).fill().map(() => Array(boardSize).fill(''));
+    setBoard(newBoard);
+    setCurrentPlayer('X');
+    setWinner(null);
+    setGameOver(false);
+    setHighlightWinningLine([]);
+    setLastMove(null);
+    setGameStartTime(Date.now());
+  }, [boardSize]);
+
+  // Timer effect
+  useEffect(() => {
+    let interval;
+    if (gameStartTime && !gameOver) {
+      interval = setInterval(() => {
+        setGameDuration(Math.floor((Date.now() - gameStartTime) / 1000));
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [gameStartTime, gameOver]);
+
+  // AI move effect
+  useEffect(() => {
+    if (gameMode === 'ai' && currentPlayer === 'O' && !gameOver && !aiThinking) {
+      const timer = setTimeout(() => {
+        makeAiMove();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [currentPlayer, gameOver, aiThinking, gameMode, makeAiMove]);
+
+  const playSound = (type) => {
+    if (!soundEnabled) return;
+    
+    // Create audio context for sound effects
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    switch (type) {
+      case 'move':
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+        break;
+      case 'win':
+        oscillator.frequency.setValueAtTime(523, audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(659, audioContext.currentTime + 0.1);
+        oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.2);
+        break;
+      case 'draw':
+        oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(300, audioContext.currentTime + 0.1);
+        break;
+      default:
+        break;
+    }
+    
+    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.3);
   };
 
   const handleCellClick = (row, col) => {
